@@ -1,13 +1,13 @@
-package com.skyapi.weatherforecast.common;
+package com.skyapi.weatherforecast;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WeatherApiCommonApplication {
+public class WeatherApiServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WeatherApiCommonApplication.class, args);
+		SpringApplication.run(WeatherApiServiceApplication.class, args);
 	}
 
 }
