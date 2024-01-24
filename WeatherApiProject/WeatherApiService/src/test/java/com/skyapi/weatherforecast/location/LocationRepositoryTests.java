@@ -1,5 +1,5 @@
 package com.skyapi.weatherforecast.location;
-
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -32,5 +32,11 @@ public class LocationRepositoryTests {
 		
 		assertThat(savedLocation).isNotNull();
 		assertThat(savedLocation.getCode()).isEqualTo("NYC_USA");
+	}
+	@Test
+	public void testListSuccess() {
+		List<Location> locations = repository.findUntrashed();
+		assertThat(locations).isNotEmpty();
+		locations.forEach(System.out::println);
 	}
 }
