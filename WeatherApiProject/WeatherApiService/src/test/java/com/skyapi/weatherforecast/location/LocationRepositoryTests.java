@@ -27,7 +27,6 @@ public class LocationRepositoryTests {
 		location.setCountryCode("US");
 		location.setCountryName("United States of America");
 		location.setEnabled(true);
-		location.setTrashed(false);
 		
 		Location savedLocation = repository.save(location);
 		
