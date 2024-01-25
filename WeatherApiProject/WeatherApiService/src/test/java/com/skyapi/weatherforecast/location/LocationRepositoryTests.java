@@ -39,4 +39,20 @@ public class LocationRepositoryTests {
 		assertThat(locations).isNotEmpty();
 		locations.forEach(System.out::println);
 	}
+	
+	@Test
+	public void testGetNotFound() {
+		String code = "ABCD";
+		Location location = repository.findByCode(code);
+		assertThat(location).isNull();
+	}
+	
+	@Test
+	public void testGetFound() {
+		String code = "LACA_USA";
+		Location location = repository.findByCode(code);
+		
+		assertThat(location).isNotNull();
+		assertThat(location.getCode()).isEqualTo(code);
+	}
 }

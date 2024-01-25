@@ -20,4 +20,7 @@ public class LocationService {
 	public List<Location> list(){
 		return repo.findUntrashed();
 	}
+	public Location get(String code) {
+		return repo.findByCode(code);
+	}
 }
