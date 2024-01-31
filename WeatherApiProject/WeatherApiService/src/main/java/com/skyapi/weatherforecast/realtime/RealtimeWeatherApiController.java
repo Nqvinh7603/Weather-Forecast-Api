@@ -1,5 +1,6 @@
 package com.skyapi.weatherforecast.realtime;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +23,26 @@ public class RealtimeWeatherApiController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeWeatherApiController.class);
 	private GeolocationService locationService;
 	private RealtimeWeatherService realtimeWeatherService;
+	private ModelMapper modelMapper;
+	
+	
 	public RealtimeWeatherApiController(GeolocationService locationService,
-			RealtimeWeatherService realtimeWeatherService) {
+			RealtimeWeatherService realtimeWeatherService, ModelMapper modelMapper) {
 		super();
 		this.locationService = locationService;
 		this.realtimeWeatherService = realtimeWeatherService;
+		this.modelMapper = modelMapper;
 	}
-	
+
+
 	@GetMapping
-	public ResponseEntity<?> getRealtimeWeatherByIPAddress(HttpServletRequest request) throws Exception{
+	public ResponseEntity<?> getRealtimeWeatherByIPAddress(HttpServletRequest request) throws Exception {
 		String ipAddress = CommonUtility.getIPAddress(request);
 		try {
 			Location locationFromIP =  locationService.getLocation(ipAddress);
 			RealtimeWeather realtimeWeather = realtimeWeatherService.getByLocation(locationFromIP);
-			return ResponseEntity.ok(realtimeWeather);
+			RealtimeWeatherDTO dto = modelMapper.map(realtimeWeather, RealtimeWeatherDTO.class);
+			return ResponseEntity.ok(dto);
 		} catch (GeolocationException e) {
 			LOGGER.error(e.getMessage(), e);
 			return ResponseEntity.badRequest().build();
