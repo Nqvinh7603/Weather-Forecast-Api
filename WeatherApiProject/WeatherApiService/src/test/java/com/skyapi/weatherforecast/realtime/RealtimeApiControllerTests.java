@@ -19,6 +19,7 @@ import com.skyapi.weatherforecast.GeolocationException;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.common.RealtimeWeather;
+import com.skyapi.weatherforecast.location.LocationNotFoundException;
 
 import java.util.Date;
 

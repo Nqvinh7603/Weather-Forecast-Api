@@ -1,5 +1,6 @@
 package com.skyapi.weatherforecast.realtime;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,4 +12,5 @@ public interface RealtimeWeatherRepository extends CrudRepository<RealtimeWeathe
 	
 	@Query("SELECT r from RealtimeWeather r where r.id=?1 and r.location.trashed=false")
 	public RealtimeWeather findByLocationCode(String locationCode);
+	
 }
