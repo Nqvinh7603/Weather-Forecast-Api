@@ -45,6 +45,11 @@ public class RealtimeWeatherService {
 		realtimeWeather.setLocation(location);
 		realtimeWeather.setLastUpdated(new Date());
 		
+		if (location.getRealtimeWeather() == null ) {
+			location.setRealtimeWeather(realtimeWeather);
+			return (locationRepo.save(location)).getRealtimeWeather();
+		}
+		
 		return realtimeWeatherRepository.save(realtimeWeather);
 	}
 }
