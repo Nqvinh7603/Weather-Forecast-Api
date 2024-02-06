@@ -105,4 +105,21 @@ public class LocationRepositoryTests {
 		Location updatedLocation = repository.save(location);
 		assertThat(updatedLocation.getListHourlyWeathers()).isNotEmpty();
 	}
+	
+	@Test
+	public void testFindByCountryCodeandCityNotFound() {
+		String countryCode = "US";
+		String cityName = "New York City";
+		Location location = repository.findByCountryCodeAndCityName(countryCode, cityName);
+		assertThat(location).isNull();
+	}
+	@Test
+	public void testFindByCountryCodeandCityFound() {
+		String countryCode = "IN";
+		String cityName = "Delhi";
+		Location location = repository.findByCountryCodeAndCityName(countryCode, cityName);
+		assertThat(location).isNotNull();
+		assertThat(location.getCountryCode()).isEqualTo(countryCode);
+		assertThat(location.getCityName()).isEqualTo(cityName);
+	}
 }
