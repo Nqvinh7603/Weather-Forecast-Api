@@ -2,6 +2,7 @@ package com.skyapi.weatherforecast.hourly;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,6 @@ import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.location.LocationNotFoundException;
-import com.skyapi.weatherforecast.location.LocationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,27 +22,48 @@ import jakarta.servlet.http.HttpServletRequest;
 public class HourlyWeatherApiController {
 	private HourlyWeatherService hourlyWeatherService;
 	private GeolocationService geolocationService;
-	public HourlyWeatherApiController(HourlyWeatherService hourlyWeatherService,
-			GeolocationService geolocationService) {
+	private ModelMapper modelMapper;
+	
+	
+	public HourlyWeatherApiController(HourlyWeatherService hourlyWeatherService, GeolocationService geolocationService,
+			ModelMapper modelMapper) {
 		super();
 		this.hourlyWeatherService = hourlyWeatherService;
 		this.geolocationService = geolocationService;
+		this.modelMapper = modelMapper;
 	}
+
 	@GetMapping
-	public ResponseEntity<?> listHourlyForecastByIPAddress(HttpServletRequest request) throws Exception{
+	public ResponseEntity<?> listHourlyForecastByIPAddress(HttpServletRequest request) throws Exception {
 		String ipAddress = CommonUtility.getIPAddress(request);
-		int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
+
 		try {
-		Location location = geolocationService.getLocation(ipAddress);
-		List<HourlyWeather> hourlyForecast=hourlyWeatherService.getByLocation(location, currentHour);
-		if(hourlyForecast.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-		return ResponseEntity.ok(hourlyForecast); 
-		}catch(GeolocationException ex) {
+			int currentHour = Integer.parseInt(request.getHeader("X-Current-Hour"));
+			Location location = geolocationService.getLocation(ipAddress);
+			List<HourlyWeather> hourlyForecast = hourlyWeatherService.getByLocation(location, currentHour);
+			if (hourlyForecast.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			}
+			return ResponseEntity.ok(listEntity2DTO(hourlyForecast));
+		} catch (NumberFormatException | GeolocationException ex) {
 			return ResponseEntity.badRequest().build();
-		}catch(LocationNotFoundException ex) {
+		} catch (LocationNotFoundException ex) {
 			return ResponseEntity.notFound().build();
-		} 
+		}
+	}
+
+	private HourlyWeatherListDTO listEntity2DTO(List<HourlyWeather> hourlyForecast) {
+		Location location = hourlyForecast.get(0).getId().getLocation();
+		
+		HourlyWeatherListDTO listDTO = new HourlyWeatherListDTO();
+		listDTO.setLocation(location.toString());
+		
+		hourlyForecast.forEach(hourlyWeather -> {
+			HourlyWeatherDTO dto = modelMapper.map(hourlyWeather, HourlyWeatherDTO.class);
+			listDTO.addWeatherHourlyDTO(dto);
+		});
+		
+		return listDTO;
+		
 	}
 }
