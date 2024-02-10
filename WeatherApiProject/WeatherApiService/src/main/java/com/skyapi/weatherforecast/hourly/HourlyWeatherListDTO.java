@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HourlyWeatherListDTO {
 	private String location;
-	@JsonProperty("hour_forecast")
+	@JsonProperty("hourly_forecast")
 	private List<HourlyWeatherDTO> hourlyForecast = new ArrayList<>();
 	public String getLocation() {
 		return location;

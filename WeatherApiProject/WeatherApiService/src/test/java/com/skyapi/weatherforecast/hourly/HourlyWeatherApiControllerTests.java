@@ -110,7 +110,7 @@ public class HourlyWeatherApiControllerTests {
 	@Test
 	public void testGetByCodeShouldReturn200OK() throws Exception {
 		String locationCode = "DELHI_IN";
-		int currentHour = 10;
+		int currentHour = 9;
 		String requestURI = END_POINT_PATH + "/" + locationCode;
 		
 		Location location = new Location();
@@ -132,7 +132,7 @@ public class HourlyWeatherApiControllerTests {
 		when(hourlyWeatherService.getByLocationCode(locationCode, currentHour)).thenReturn(hourForecast);
 		mockMvc.perform(get(requestURI).header(X_CURRENT_HOUR, String.valueOf(currentHour)))
 		.andExpect(status().isOk()).andExpect(jsonPath("$.location", is(location.toString())))
-		.andExpect(jsonPath("$.hourly_forecast[0].hour_of_day", is(10))).andDo(print());
+		.andExpect(jsonPath("$.hourly_forecast[0].hour_of_day", is(11))).andDo(print());
 	}
 	
 	
