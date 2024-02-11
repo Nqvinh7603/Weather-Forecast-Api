@@ -1,5 +1,6 @@
 package com.skyapi.weatherforecast.hourly;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -34,5 +35,9 @@ public class HourlyWeatherService {
 			throw new LocationNotFoundException("No location found with the given code");
 		}
 		return hourlyWeatherRepo.findByLocationCode(locationCode, currentHour);
+	}
+	
+	public List<HourlyWeather> updateByLocationCode(String locationCode, List<HourlyWeather> hourlyForecastInRequest){
+		return Collections.emptyList();
 	}
 }

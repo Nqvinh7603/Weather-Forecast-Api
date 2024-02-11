@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,8 +18,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skyapi.weatherforecast.GeolocationException;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.HourlyWeather;
@@ -31,6 +34,8 @@ public class HourlyWeatherApiControllerTests {
 	private static final String END_POINT_PATH = "/v1/hourly";
 	@Autowired
 	MockMvc mockMvc;
+	@Autowired
+	ObjectMapper objectMapper;
 	@MockBean
 	private HourlyWeatherService hourlyWeatherService;
 	@MockBean
@@ -135,5 +140,11 @@ public class HourlyWeatherApiControllerTests {
 		.andExpect(jsonPath("$.hourly_forecast[0].hour_of_day", is(11))).andDo(print());
 	}
 	
-	
+	@Test
+	public void testUpdateShouldReturn400BadRequestBecauseNoData() throws Exception {
+		String requestURI = END_POINT_PATH + "/NYC_USA";
+		List<HourlyWeatherDTO> listDTO = Collections.emptyList();
+		String requestBody = objectMapper.writeValueAsString(listDTO);
+		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest()).andDo(print());
+	}
 }
