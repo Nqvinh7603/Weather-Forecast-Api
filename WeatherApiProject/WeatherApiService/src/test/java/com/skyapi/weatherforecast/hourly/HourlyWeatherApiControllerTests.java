@@ -145,6 +145,25 @@ public class HourlyWeatherApiControllerTests {
 		String requestURI = END_POINT_PATH + "/NYC_USA";
 		List<HourlyWeatherDTO> listDTO = Collections.emptyList();
 		String requestBody = objectMapper.writeValueAsString(listDTO);
-		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest()).andDo(print());
+		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		.andExpect(status().isBadRequest())
+		.andExpect(jsonPath("$.erros[0]", is("Hourly forecast data cannot be empty")))
+		.andDo(print());
 	}
+	@Test
+	public void testUpdateShouldReturn400BadRequestBecauseInvalidData() throws Exception {
+		String requestURI = END_POINT_PATH + "/NYC_USA";
+		HourlyWeatherDTO dto1 = new HourlyWeatherDTO().hourOfDay(10).temperature(133).precipitation(70)
+				.status("Cloudy");
+
+		HourlyWeatherDTO dto2 = new HourlyWeatherDTO().hourOfDay(-1).temperature(155).precipitation(60)
+				.status("");
+		
+		List<HourlyWeatherDTO> listDTO = List.of(dto1, dto2);
+		String requestBody = objectMapper.writeValueAsString(listDTO);
+		mockMvc.perform(put(requestURI).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		.andExpect(status().isBadRequest())
+		.andDo(print());
+	}
+
 }

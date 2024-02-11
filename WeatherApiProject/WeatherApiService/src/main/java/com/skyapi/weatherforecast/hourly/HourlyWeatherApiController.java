@@ -1,5 +1,6 @@
 package com.skyapi.weatherforecast.hourly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.coyote.BadRequestException;
@@ -90,7 +91,17 @@ public class HourlyWeatherApiController {
 		if(listDTO.isEmpty()) {
 			throw new com.skyapi.weatherforecast.BadRequestException("Hourly forecast data cannot be empty");
 		}
+		listDTO.forEach(System.out::println);
+		List<HourlyWeather> listHourlyWeather = listDTO2ListEntity(listDTO);
+		System.out.println();
+		listHourlyWeather.forEach(System.out::println);
 		return ResponseEntity.accepted().build();
 	}
-	
+	private List<HourlyWeather> listDTO2ListEntity(List<HourlyWeatherDTO> listDTO){
+		List<HourlyWeather> listEntity = new ArrayList<>();
+		listDTO.forEach(dto -> {
+			listEntity.add(modelMapper.map(dto, HourlyWeather.class));
+		});
+		return listEntity;
+	}
 }
