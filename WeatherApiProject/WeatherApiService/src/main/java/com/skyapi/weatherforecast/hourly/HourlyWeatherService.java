@@ -42,6 +42,6 @@ public class HourlyWeatherService {
 		if(location == null) {
 			throw new  LocationNotFoundException("No location found with the given code: " + locationCode);
 		}
-		return Collections.emptyList();
+		return (List<HourlyWeather>) hourlyWeatherRepo.saveAll(hourlyForecastInRequest);
 	}
 }
