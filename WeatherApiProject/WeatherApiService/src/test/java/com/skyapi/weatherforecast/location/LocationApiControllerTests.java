@@ -48,20 +48,34 @@ public class LocationApiControllerTests {
 
 	@Test
 	public void testAddShouldReturn201Created() throws Exception {
+		String code = "NYC_USA";
 		Location location = new Location();
-		location.setCode("NYC_USA");
+		location.setCode(code);
 		location.setCityName("New York City");
 		location.setRegionName("New York");
 		location.setCountryCode("US");
 		location.setCountryName("United States of America");
 		location.setEnabled(true);
-
+		
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setRegionName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCountryName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
+		
 		Mockito.when(service.add(location)).thenReturn(location);
-		String bodyContent = mapper.writeValueAsString(location);
+		
+		String bodyContent = mapper.writeValueAsString(dto);
+		
 		mockMvc.perform(post(END_POINT_PATH).contentType("application/json").content(bodyContent))
-				.andExpect(status().isCreated()).andExpect(content().contentType("application/json"))
-				.andExpect(jsonPath("$.code", is("NYC_USA"))).andExpect(jsonPath("$.city_name", is("New York City")))
-				.andExpect(header().string("Location", "/v1/locations/NYC_USA")).andDo(print());
+			.andExpect(status().isCreated())
+			.andExpect(content().contentType("application/json"))
+			.andExpect(jsonPath("$.code", is(code)))
+			.andExpect(jsonPath("$.city_name", is("New York City")))
+			.andExpect(header().string("Location", END_POINT_PATH + "/" + code))		
+			.andDo(print());		
 	}
 
 	@Test
@@ -78,29 +92,26 @@ public class LocationApiControllerTests {
 		location1.setRegionName("New York");
 		location1.setCountryCode("US");
 		location1.setCountryName("United States of America");
-		location1.setEnabled(true);
-
+		location1.setEnabled(true);		
+		
 		Location location2 = new Location();
 		location2.setCode("LACA_USA");
 		location2.setCityName("Los Angeles");
 		location2.setRegionName("California");
 		location2.setCountryCode("US");
 		location2.setCountryName("United States of America");
-		location2.setEnabled(true);
-
-		Location location3 = new Location();
-		location3.setCode("DELHI_IN");
-		location3.setCityName("New Delhi");
-		location3.setRegionName("Delhi");
-		location3.setCountryCode("IN");
-		location3.setCountryName("India");
-		location3.setEnabled(true);
-		location3.setTrashed(true);
-
-		Mockito.when(service.list()).thenReturn(List.of(location1, location2));
-		mockMvc.perform(get(END_POINT_PATH)).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json")).andExpect(jsonPath("$[0].code", is("NYC_USA")))
-				.andExpect(jsonPath("$[0].city_name", is("New York City"))).andDo(print());
+		location2.setEnabled(true);	
+		
+		Mockito.when(service.list()).thenReturn(List.of(location1));
+		
+		mockMvc.perform(get(END_POINT_PATH))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json"))
+			.andExpect(jsonPath("$[0].code", is("NYC_USA")))
+			.andExpect(jsonPath("$[0].city_name", is("New York City")))
+//			.andExpect(jsonPath("$[1].code", is("LACA_USA")))
+//			.andExpect(jsonPath("$[1].city_name", is("Los Angeles")))			
+			.andDo(print());			
 	}
 
 	@Test
@@ -129,20 +140,21 @@ public class LocationApiControllerTests {
 
 		Mockito.when(service.get(code)).thenReturn(location);
 		mockMvc.perform(get(requestURI)).andExpect(status().isOk()).andExpect(content().contentType("application/json"))
-				.andExpect(jsonPath("$.code", is(code))).andExpect(jsonPath("$.city_name", is("Los Angeles")))
+				.andExpect(jsonPath("$.code", is(code)))
+				.andExpect(jsonPath("$.city_name", is("Los Angeles")))
 				.andDo(print());
 	}
 
 	@Test
 	public void testUpdateShouldReturn404NotFound() throws Exception {
-		Location location = new Location();
+		LocationDTO location = new LocationDTO();
 		location.setCode("ABCDEF");
 		location.setCityName("Los Angeles");
 		location.setRegionName("California");
 		location.setCountryCode("US");
 		location.setCountryName("United States of America");
 		location.setEnabled(true);
-		Mockito.when(service.update(location)).thenThrow(new LocationNotFoundException("No location found"));
+		Mockito.when(service.update(Mockito.any())).thenThrow(new LocationNotFoundException("No location found"));
 		String bodyContent = mapper.writeValueAsString(location);
 
 		mockMvc.perform(put(END_POINT_PATH).contentType("application/json").content(bodyContent))
@@ -151,7 +163,7 @@ public class LocationApiControllerTests {
 
 	@Test
 	public void testUpdateShouldReturn404BadRequest() throws Exception {
-		Location location = new Location();
+		LocationDTO location = new LocationDTO();
 		location.setCityName("Los Angeles");
 		location.setRegionName("California");
 		location.setCountryCode("US");
@@ -171,9 +183,15 @@ public class LocationApiControllerTests {
 		location.setCountryCode("US");
 		location.setCountryName("United States of America");
 		location.setEnabled(true);
-
+		LocationDTO dto = new LocationDTO();
+		dto.setCode(location.getCode());
+		dto.setCityName(location.getCityName());
+		dto.setCityName(location.getRegionName());
+		dto.setCountryCode(location.getCountryCode());
+		dto.setCityName(location.getCountryName());
+		dto.setEnabled(location.isEnabled());
 		Mockito.when(service.update(location)).thenReturn(location);
-		String bodyContent = mapper.writeValueAsString(location);
+		String bodyContent = mapper.writeValueAsString(dto);
 		mockMvc.perform(put(END_POINT_PATH).contentType("application/json").content(bodyContent))
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json"))
 				.andExpect(jsonPath("$.code", is("NYC_USA"))).andExpect(jsonPath("$.city_name", is("New York City")))
@@ -213,7 +231,7 @@ public class LocationApiControllerTests {
 	@Test
 	public void testValidateRequestBodyLocationCodeLength() throws Exception {
 		Location location = new Location();
-		location.setCode("");
+		location.setCode("ABCD");
 		location.setCityName("New York City");
 		location.setRegionName("New York");
 		location.setCountryCode("US");
