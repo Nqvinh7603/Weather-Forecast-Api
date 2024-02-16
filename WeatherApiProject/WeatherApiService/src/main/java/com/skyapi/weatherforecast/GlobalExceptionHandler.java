@@ -17,6 +17,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.skyapi.weatherforecast.location.LocationNotFoundException;
+
 import java.util.Date;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -34,6 +36,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		error.addError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+		error.setPath(request.getServletPath());
+		logger.error(ex.getMessage(), ex);
+		return error;
+	}
+	@ExceptionHandler(LocationNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public ErrorDTO handleLocationNotFoundException(HttpServletRequest request, Exception ex) {
+		ErrorDTO error = new ErrorDTO();
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.NOT_FOUND.value());
+		error.addError(ex.getMessage());
 		error.setPath(request.getServletPath());
 		logger.error(ex.getMessage(), ex);
 		return error;

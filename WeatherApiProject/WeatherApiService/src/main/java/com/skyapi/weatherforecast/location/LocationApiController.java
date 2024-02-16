@@ -36,7 +36,7 @@ public class LocationApiController {
 	public ResponseEntity<LocationDTO> addLocation(@RequestBody @Valid LocationDTO dto) {
 		Location addedLocation = service.add(dto2Entity(dto));
 		URI uri = URI.create("/v1/locations/" + addedLocation.getCode());
-		
+
 		return ResponseEntity.created(uri).body(entity2DTO(addedLocation));
 	}
 
@@ -68,29 +68,21 @@ public class LocationApiController {
 	@GetMapping("/{code}")
 	public ResponseEntity<?> getLocation(@PathVariable("code") String code) {
 		Location location = service.get(code);
-		if (location == null) {
-			return ResponseEntity.notFound().build();
-		}
 		return ResponseEntity.ok(location);
 	}
 
 	@PutMapping
 	public ResponseEntity<?> updateLocation(@RequestBody @Valid LocationDTO location) {
-		try {
-			Location updatedLocation = service.update(dto2Entity(location));
-			return ResponseEntity.ok(entity2DTO(updatedLocation));
-		} catch (LocationNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+		Location updatedLocation = service.update(dto2Entity(location));
+
+		return ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> deleteLocation(@PathVariable("code") String code) {
-		try {
-			service.delete(code);
-			return ResponseEntity.noContent().build();
-		} catch (LocationNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+		service.delete(code);
+
+		return ResponseEntity.notFound().build();
+
 	}
 }
