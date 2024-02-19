@@ -3,7 +3,6 @@ package rest.client.examples.location;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Location {
-	
 	private String code;
 
 	@JsonProperty("city_name")
@@ -19,7 +18,7 @@ public class Location {
 	private String countryCode;
 
 	private boolean enabled;
-
+	
 	private boolean trashed;
 
 	public String getCode() {

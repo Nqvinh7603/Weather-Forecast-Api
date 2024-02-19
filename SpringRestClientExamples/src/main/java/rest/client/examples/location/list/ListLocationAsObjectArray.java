@@ -1,9 +1,9 @@
 package rest.client.examples.location.list;
 
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientResponseException;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
