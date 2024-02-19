@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
 import com.skyapi.weatherforecast.common.Location;
+
 @Service
 public class GeolocationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
@@ -37,6 +38,5 @@ public class GeolocationService {
 		} catch (IOException e) {
 			throw new GeolocationException("Error querying IP database", e);
 		}
-	}
-	
+	}	
 }
