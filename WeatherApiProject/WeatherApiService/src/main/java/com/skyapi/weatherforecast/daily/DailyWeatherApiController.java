@@ -1,9 +1,12 @@
 package com.skyapi.weatherforecast.daily;
 
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,8 +14,11 @@ import com.skyapi.weatherforecast.CommonUtility;
 import com.skyapi.weatherforecast.GeolocationService;
 import com.skyapi.weatherforecast.common.DailyWeather;
 import com.skyapi.weatherforecast.common.Location;
+
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/v1/daily")
 public class DailyWeatherApiController {
@@ -59,4 +65,36 @@ public class DailyWeatherApiController {
 		}
 		return ResponseEntity.ok(listEntity2DTO(dailyForecast));
 	}
+	@PutMapping("/{locationCode}")
+	public ResponseEntity<?> updateDailyForecast(@PathVariable("locationCode") String code,
+			@RequestBody @Valid List<DailyWeatherDTO> listDTO) throws BadRequestException {
+		
+		if (listDTO.isEmpty()) {
+			throw new BadRequestException("Daily forecast data cannot be empty");
+		}
+		
+		listDTO.forEach(System.out::println);
+		
+		List<DailyWeather> dailyWeather = listDTO2ListEntity(listDTO);
+		
+		System.out.println("================");
+		
+		dailyWeather.forEach(System.out::println);		
+		
+		List<DailyWeather> updatedForecast = dailyWeatherService.updateByLocationCode(code, dailyWeather);
+		
+		
+		
+		return ResponseEntity.ok(listEntity2DTO(updatedForecast));
+	}	
+	private List<DailyWeather> listDTO2ListEntity(List<DailyWeatherDTO> listDTO) {
+		List<DailyWeather> listEntity = new ArrayList<>();
+		
+		listDTO.forEach(dto -> {
+			listEntity.add(modelMapper.map(dto, DailyWeather.class));
+		});
+		
+		return listEntity;
+	}	
+	
 }
