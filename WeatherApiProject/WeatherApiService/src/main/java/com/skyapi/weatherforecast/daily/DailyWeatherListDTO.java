@@ -1,6 +1,5 @@
 package com.skyapi.weatherforecast.daily;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,6 @@ public class DailyWeatherListDTO {
 
 	private String location;
 	
-	@JsonProperty("daily_forecast")
 	private List<DailyWeatherDTO> dailyForecast = new ArrayList<>();
 
 	public String getLocation() {

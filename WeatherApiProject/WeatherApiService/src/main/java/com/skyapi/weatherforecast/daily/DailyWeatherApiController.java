@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.daily;
 import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/v1/daily")
+@Validated
 public class DailyWeatherApiController {
 	private DailyWeatherService dailyWeatherService;
 	private GeolocationService locationService;

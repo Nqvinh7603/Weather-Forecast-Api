@@ -37,24 +37,31 @@ public class DailyWeatherService {
 		}
 		return dailyWeatherRepository.findByLocationCode(locationCode);
 	}
-	public List<DailyWeather> updateByLocationCode(String code, List<DailyWeather> dailyWeatherInRequest){
+	public List<DailyWeather> updateByLocationCode(String code, List<DailyWeather> dailyWeatherInRequest) 
+			throws LocationNotFoundException {
 		Location location = locationRepository.findByCode(code);
-		if(location == null) {
+		
+		if (location == null) {
 			throw new LocationNotFoundException(code);
 		}
+		
 		for (DailyWeather data : dailyWeatherInRequest) {
 			data.getId().setLocation(location);
 		}
+		
 		List<DailyWeather> dailyWeatherInDB = location.getListDailyWeather();
 		List<DailyWeather> dailyWeatherToBeRemoved = new ArrayList<>();
+		
 		for (DailyWeather forecast : dailyWeatherInDB) {
-			if(!dailyWeatherInRequest.contains(forecast)) {
+			if (!dailyWeatherInRequest.contains(forecast)) {
 				dailyWeatherToBeRemoved.add(forecast.getShallowCopy());
 			}
 		}
+		
 		for (DailyWeather forecastToBeRemoved : dailyWeatherToBeRemoved) {
 			dailyWeatherInDB.remove(forecastToBeRemoved);
 		}
-		return (List<DailyWeather>) dailyWeatherRepository.save(dailyWeatherInRequest);
-	}
+		
+		return (List<DailyWeather>) dailyWeatherRepository.saveAll(dailyWeatherInRequest);
+	}	
 }
