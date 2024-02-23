@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.daily;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,5 +49,14 @@ public class DailyWeatherApiController {
 			listDTO.addDailyWeatherDTO(modelMapper.map(dailyWeather, DailyWeatherDTO.class));
 		});
 		return listDTO;
+	}
+	
+	@GetMapping("/{locationCode}")
+	public ResponseEntity<?> listHourlyForecastByLocationCode(@PathVariable("locationCode") String locationCode){
+		List<DailyWeather> dailyForecast = dailyWeatherService.getByLocationCode(locationCode);
+		if(dailyForecast.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(listEntity2DTO(dailyForecast));
 	}
 }

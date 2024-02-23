@@ -9,7 +9,7 @@ import java.util.*;
 
 public interface DailyWeatherRepository extends CrudRepository<DailyWeather, DailyWeatherId> {
 	@Query("""
-			Select d from DailyWeather d where d.id.location.code = ?1 and d.id.location.trashed = false
+				
 			""")
 	public List<DailyWeather> findByLocationCode(String locationCode);
 }
