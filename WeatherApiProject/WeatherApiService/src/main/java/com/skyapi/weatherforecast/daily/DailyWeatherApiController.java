@@ -24,9 +24,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/v1/daily")
 @Validated
 public class DailyWeatherApiController {
+
 	private DailyWeatherService dailyWeatherService;
 	private GeolocationService locationService;
 	private ModelMapper modelMapper;
+	
 	public DailyWeatherApiController(DailyWeatherService dailyWeatherService, GeolocationService locationService,
 			ModelMapper modelMapper) {
 		super();
@@ -34,39 +36,33 @@ public class DailyWeatherApiController {
 		this.locationService = locationService;
 		this.modelMapper = modelMapper;
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<?> listDailyForecastByIPAddress(HttpServletRequest request) throws Exception{
+	public ResponseEntity<?> listDailyForecastByIPAddress(HttpServletRequest request) throws Throwable {
 		String ipAddress = CommonUtility.getIPAddress(request);
 		
 		Location locationFromIP = locationService.getLocation(ipAddress);
-		
 		List<DailyWeather> dailyForecast = dailyWeatherService.getByLocation(locationFromIP);
-		if(dailyForecast.isEmpty()) {
+		
+		if (dailyForecast.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
-		return ResponseEntity.ok(listEntity2DTO(dailyForecast));
 		
-	}
-	
-	private DailyWeatherListDTO listEntity2DTO(List<DailyWeather> dailyForecast) {
-		Location location = dailyForecast.get(0).getId().getLocation();
-		DailyWeatherListDTO listDTO = new DailyWeatherListDTO();
-		listDTO.setLocation(location.toString());
-		dailyForecast.forEach(dailyWeather -> {
-			listDTO.addDailyWeatherDTO(modelMapper.map(dailyWeather, DailyWeatherDTO.class));
-		});
-		return listDTO;
+		
+		return ResponseEntity.ok(listEntity2DTO(dailyForecast));
 	}
 	
 	@GetMapping("/{locationCode}")
-	public ResponseEntity<?> listHourlyForecastByLocationCode(@PathVariable("locationCode") String locationCode){
+	public ResponseEntity<?> listDailyForecastByLocationCode(@PathVariable("locationCode") String locationCode) {
 		List<DailyWeather> dailyForecast = dailyWeatherService.getByLocationCode(locationCode);
-		if(dailyForecast.isEmpty()) {
+		
+		if (dailyForecast.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
+		
 		return ResponseEntity.ok(listEntity2DTO(dailyForecast));
 	}
+	
 	@PutMapping("/{locationCode}")
 	public ResponseEntity<?> updateDailyForecast(@PathVariable("locationCode") String code,
 			@RequestBody @Valid List<DailyWeatherDTO> listDTO) throws BadRequestException {
@@ -86,9 +82,22 @@ public class DailyWeatherApiController {
 		List<DailyWeather> updatedForecast = dailyWeatherService.updateByLocationCode(code, dailyWeather);
 		
 		
-		
 		return ResponseEntity.ok(listEntity2DTO(updatedForecast));
 	}	
+	
+	private DailyWeatherListDTO listEntity2DTO(List<DailyWeather> dailyForecast) {
+		Location location = dailyForecast.get(0).getId().getLocation();
+		
+		DailyWeatherListDTO listDTO = new DailyWeatherListDTO();
+		listDTO.setLocation(location.toString());
+		
+		dailyForecast.forEach(dailyWeather -> {
+			listDTO.addDailyWeatherDTO(modelMapper.map(dailyWeather, DailyWeatherDTO.class));
+		});
+		
+		return listDTO;
+	}
+	
 	private List<DailyWeather> listDTO2ListEntity(List<DailyWeatherDTO> listDTO) {
 		List<DailyWeather> listEntity = new ArrayList<>();
 		
@@ -98,5 +107,4 @@ public class DailyWeatherApiController {
 		
 		return listEntity;
 	}	
-	
 }

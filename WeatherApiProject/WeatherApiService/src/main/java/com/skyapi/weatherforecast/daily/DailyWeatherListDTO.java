@@ -4,7 +4,7 @@ package com.skyapi.weatherforecast.daily;
 import java.util.ArrayList;
 import java.util.List;
 public class DailyWeatherListDTO {
-
+	
 	private String location;
 	
 	private List<DailyWeatherDTO> dailyForecast = new ArrayList<>();
@@ -28,5 +28,4 @@ public class DailyWeatherListDTO {
 	public void addDailyWeatherDTO(DailyWeatherDTO dto) {
 		this.dailyForecast.add(dto);
 	}
-	
 }

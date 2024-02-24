@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 
 @JsonPropertyOrder({"code", "city_name", "region_name", "country_code", "country_name", "enabled"})
+
 public class LocationDTO {
 	@NotNull(message = "Location code cannot be null")
 	@Length(min = 3, max = 12, message = "Location code must have 3-12 characters")
