@@ -25,77 +25,104 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
 import java.util.*;
+
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorDTO handleGenericException(HttpServletRequest request, Exception ex) {
 		ErrorDTO error = new ErrorDTO();
+
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		error.addError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 		error.setPath(request.getServletPath());
-		logger.error(ex.getMessage(), ex);
+
+		LOGGER.error(ex.getMessage(), ex);
+
 		return error;
 	}
+
+	@ExceptionHandler({ BadRequestException.class, GeolocationException.class })
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorDTO handleBadRequestException(HttpServletRequest request, Exception ex) {
+		ErrorDTO error = new ErrorDTO();
+
+		error.setTimestamp(new Date());
+		error.setStatus(HttpStatus.BAD_REQUEST.value());
+		error.addError(ex.getMessage());
+		error.setPath(request.getServletPath());
+
+		LOGGER.error(ex.getMessage(), ex);
+
+		return error;
+	}
+
 	@ExceptionHandler(LocationNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
 	public ErrorDTO handleLocationNotFoundException(HttpServletRequest request, Exception ex) {
 		ErrorDTO error = new ErrorDTO();
+
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.NOT_FOUND.value());
 		error.addError(ex.getMessage());
 		error.setPath(request.getServletPath());
-		logger.error(ex.getMessage(), ex);
+
+		LOGGER.error(ex.getMessage(), ex);
+
 		return error;
 	}
-	@ExceptionHandler(BadRequestException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	public ErrorDTO handleBadRequestException(HttpServletRequest request, Exception ex) {
-		ErrorDTO error = new ErrorDTO();
-		error.setTimestamp(new Date());
-		error.setStatus(HttpStatus.BAD_REQUEST.value());
-		error.addError(ex.getMessage());
-		error.setPath(request.getServletPath());
-		logger.error(ex.getMessage(), ex);
-		return error;
-	}
+
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorDTO handleConstraintViolationException(HttpServletRequest request, Exception ex) {
 		ErrorDTO error = new ErrorDTO();
+
 		ConstraintViolationException violationException = (ConstraintViolationException) ex;
+
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.BAD_REQUEST.value());
 		error.setPath(request.getServletPath());
+
 		var constraintViolations = violationException.getConstraintViolations();
+
 		constraintViolations.forEach(constraint -> {
 			error.addError(constraint.getPropertyPath() + ": " + constraint.getMessage());
 		});
-		logger.error(ex.getMessage(), ex);
+
+		LOGGER.error(ex.getMessage(), ex);
+
 		return error;
 	}
+
 	@Override
-	@Nullable
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		logger.error(ex.getMessage(), ex);
-		
+
+		LOGGER.error(ex.getMessage(), ex);
+
 		ErrorDTO error = new ErrorDTO();
+
 		error.setTimestamp(new Date());
 		error.setStatus(HttpStatus.BAD_REQUEST.value());
 		error.setPath(((ServletWebRequest) request).getRequest().getServletPath());
-		List<FieldError> fieldErrors  = ex.getBindingResult().getFieldErrors();
-		
+
+		List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+
 		fieldErrors.forEach(fieldError -> {
 			error.addError(fieldError.getDefaultMessage());
+
 		});
+
 		return new ResponseEntity<>(error, headers, status);
+
 	}
-	
+
 }

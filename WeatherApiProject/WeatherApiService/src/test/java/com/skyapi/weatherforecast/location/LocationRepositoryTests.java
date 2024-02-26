@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.skyapi.weatherforecast.common.DailyWeather;
 import com.skyapi.weatherforecast.common.HourlyWeather;
 import com.skyapi.weatherforecast.common.Location;
 import com.skyapi.weatherforecast.common.RealtimeWeather;
@@ -121,5 +122,32 @@ public class LocationRepositoryTests {
 		assertThat(location).isNotNull();
 		assertThat(location.getCountryCode()).isEqualTo(countryCode);
 		assertThat(location.getCityName()).isEqualTo(cityName);
+	}
+	
+	@Test
+	public void testAddDailyWeatherData() {
+		Location location = repository.findById("DELHI_IN").get();
+		List<DailyWeather> listDailyWeathers=location.getListDailyWeather();
+		DailyWeather forecast1 = new DailyWeather()
+				.location(location)
+				.dayOfMonth(16)
+				.month(7)
+				.minTemp(25)
+				.maxTemp(33)
+				.precipitation(20)
+				.status("Sunny");
+		
+		DailyWeather forecast2 = new DailyWeather()
+				.location(location)
+				.dayOfMonth(17)
+				.month(7)
+				.minTemp(26)
+				.maxTemp(34)
+				.precipitation(10)
+				.status("Clear");
+		listDailyWeathers.add(forecast1);
+		listDailyWeathers.add(forecast2);
+		Location updatedLocation = repository.save(location);
+		assertThat(updatedLocation.getListDailyWeather()).isNotEmpty();
 	}
 }

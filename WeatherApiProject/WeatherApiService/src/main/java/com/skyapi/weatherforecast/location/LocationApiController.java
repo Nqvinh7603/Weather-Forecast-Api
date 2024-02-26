@@ -81,8 +81,7 @@ public class LocationApiController {
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> deleteLocation(@PathVariable("code") String code) {
 		service.delete(code);
-
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.noContent().build();
 
 	}
 }
