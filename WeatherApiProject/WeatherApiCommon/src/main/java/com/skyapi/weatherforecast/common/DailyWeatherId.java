@@ -8,7 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Embeddable
-public class DailyWeatherId implements Serializable{
+public class DailyWeatherId implements Serializable {
+
 	private int dayOfMonth;
 	private int month;
 	
@@ -16,10 +17,8 @@ public class DailyWeatherId implements Serializable{
 	@JoinColumn(name = "location_code")
 	private Location location;
 
+	public DailyWeatherId() { }
 	
-	public DailyWeatherId() {
-	}
-
 	public DailyWeatherId(int dayOfMonth, int month, Location location) {
 		super();
 		this.dayOfMonth = dayOfMonth;
@@ -52,6 +51,11 @@ public class DailyWeatherId implements Serializable{
 	}
 
 	@Override
+	public String toString() {
+		return "DailyWeatherId [dayOfMonth=" + dayOfMonth + ", month=" + month + ", location=" + location + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		return Objects.hash(dayOfMonth, location, month);
 	}
@@ -66,11 +70,6 @@ public class DailyWeatherId implements Serializable{
 			return false;
 		DailyWeatherId other = (DailyWeatherId) obj;
 		return dayOfMonth == other.dayOfMonth && Objects.equals(location, other.location) && month == other.month;
-	}
-
-	@Override
-	public String toString() {
-		return "DailyWeatherId [dayOfMonth=" + dayOfMonth + ", month=" + month + ", location=" + location + "]";
 	}
 	
 	

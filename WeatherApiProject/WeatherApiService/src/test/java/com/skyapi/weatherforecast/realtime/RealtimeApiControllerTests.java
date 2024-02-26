@@ -178,15 +178,15 @@ public class RealtimeApiControllerTests {
 		String locationCode = "ABC_US";
 		String requestURI = END_POINT_PATH + "/" + locationCode;
 		
-		RealtimeWeather realtimeWeather = new RealtimeWeather();
+		RealtimeWeatherDTO realtimeWeather = new RealtimeWeatherDTO();
 		realtimeWeather.setTemperature(12);
 		realtimeWeather.setHumidity(32);
 		realtimeWeather.setPrecipitation(88);
 		realtimeWeather.setStatus("Cloudy");
 		realtimeWeather.setWindSpeed(5);
-		realtimeWeather.setLocationCode(locationCode);
+		
 		LocationNotFoundException ex = new LocationNotFoundException(locationCode);
-		Mockito.when(realtimeWeatherService.update(locationCode,realtimeWeather)).thenThrow(ex);
+		Mockito.when(realtimeWeatherService.update(Mockito.eq(locationCode), Mockito.any())).thenThrow(ex);
 		
 		String bodyContent = mapper.writeValueAsString(realtimeWeather);
 		

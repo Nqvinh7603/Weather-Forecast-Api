@@ -1,6 +1,5 @@
 package com.skyapi.weatherforecast.daily;
 
-import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,10 +64,10 @@ public class DailyWeatherApiController {
 	
 	@PutMapping("/{locationCode}")
 	public ResponseEntity<?> updateDailyForecast(@PathVariable("locationCode") String code,
-			@RequestBody @Valid List<DailyWeatherDTO> listDTO) throws BadRequestException {
+			@RequestBody @Valid List<DailyWeatherDTO> listDTO) throws com.skyapi.weatherforecast.BadRequestException {
 		
 		if (listDTO.isEmpty()) {
-			throw new BadRequestException("Daily forecast data cannot be empty");
+			throw new com.skyapi.weatherforecast.BadRequestException("Daily forecast data cannot be empty");
 		}
 		
 		listDTO.forEach(System.out::println);
