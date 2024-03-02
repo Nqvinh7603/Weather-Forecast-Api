@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.full;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skyapi.weatherforecast.daily.DailyWeatherDTO;
 import com.skyapi.weatherforecast.hourly.HourlyWeatherDTO;
@@ -12,6 +13,7 @@ public class FullWeatherDTO {
 	private String location;
 	
 	@JsonProperty("realtime_weather")
+	@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = RealtimeWeatherFieldFilter.class)
 	private RealtimeWeatherDTO realtimeWeather = new RealtimeWeatherDTO();
 	
 	@JsonProperty("hourly_forecast")

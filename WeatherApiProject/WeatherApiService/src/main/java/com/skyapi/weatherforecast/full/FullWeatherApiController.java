@@ -3,6 +3,7 @@ package com.skyapi.weatherforecast.full;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,21 +19,37 @@ public class FullWeatherApiController {
 	private GeolocationService locationService;
 	private FullWeatherService weatherService;
 	private ModelMapper modelMapper;
-	public FullWeatherApiController(GeolocationService locationService, FullWeatherService weatherService) {
+	
+	
+	public FullWeatherApiController(GeolocationService locationService, FullWeatherService weatherService,
+			ModelMapper modelMapper) {
 		super();
 		this.locationService = locationService;
 		this.weatherService = weatherService;
+		this.modelMapper = modelMapper;
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<?> getFullWeatherByIPAddress(HttpServletRequest request) throws Exception{
+	public ResponseEntity<?> getFullWeatherByIPAddress(HttpServletRequest request) throws Exception  {
 		String ipAddress = CommonUtility.getIPAddress(request);
+		
 		Location locationFromIP = locationService.getLocation(ipAddress);
 		Location locationInDB = weatherService.getByLocation(locationFromIP);
 		
-		return null;
+		FullWeatherDTO dto = entity2DTO(locationInDB);
+		
+		return ResponseEntity.ok(dto);
 	}
 	
+	@GetMapping("/{locationCode}")
+	public ResponseEntity<?> getFullWeatherByLocationCode(@PathVariable String locationCode) {
+		
+		Location locationInDB = weatherService.get(locationCode);
+		
+		FullWeatherDTO dto = entity2DTO(locationInDB);
+		
+		return ResponseEntity.ok(dto);
+	}	
 	private FullWeatherDTO entity2DTO(Location entity) {
 		FullWeatherDTO dto = modelMapper.map(entity, FullWeatherDTO.class);
 		
