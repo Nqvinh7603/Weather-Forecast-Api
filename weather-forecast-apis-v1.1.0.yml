@@ -1,10 +1,9 @@
 openapi: 3.0.3
 info:
   title: Weather Forecast APIs - SkyAPI Inc.
-  version: 1.0.0
+  version: 1.1.0
   description: >-
     Reference design documentation of Weather Forecast APIs based on the OpenAPI
-    3.0 specification. Created by Nam Ha Minh - instructor of the "Spring Boot REST APIs Ultimate course". Visit course: https://www.udemy.com/course/spring-boot-rest-apis-ultimate/
   termsOfService: https://skyweather.net/terms
   contact:
     email: contact@skyweather.net
@@ -175,14 +174,23 @@ paths:
         '200':
           description: >-
             successful retrieval operation. Realtime data available for the client's
-            location
+            location. The response contains links which clients can use to get hourly, daily and full weather forecast of the same location.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RealtimeWeather'
               examples:
                 realtimeWeatherExample:
-                  $ref: '#/components/examples/realtimeWeatherExample'
+                  $ref: '#/components/examples/realtimeWeatherExampleByIP'
+          links:
+           self:
+            $ref: '#/components/links/realtimeLinkByIP'           
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByIP'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByIP'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByIP'                   
         '400':
           description: bad request. Could not determine client's IP address
         '404':
@@ -201,14 +209,23 @@ paths:
       operationId: getRealtimeByLocationCode
       responses:
         '200':
-          description: successful retrieval operation. Realtime data available for the given location
+          description: successful retrieval operation. Realtime data available for the given location. The response contains links which clients can use to get hourly, daily and full weather forecast of the same location.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RealtimeWeather'
               examples:
                 realtimeWeatherExample:
-                  $ref: '#/components/examples/realtimeWeatherExample'
+                  $ref: '#/components/examples/realtimeWeatherExampleByCode'
+          links:
+           self:
+            $ref: '#/components/links/realtimeLinkByCode'           
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByCode'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'                   
         '404':
           description: No managed location found for the given code
       tags:
@@ -236,11 +253,23 @@ paths:
               wind_speed: 8
       responses:
         '200':
-          description: successful update operation. Realtime weather data updated successfully
+          description: successful update operation. Realtime weather data updated successfully. The response contains links which clients can use to get hourly, daily and full weather forecast of the same location.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RealtimeWeather'
+              examples:
+                realtimeWeatherExample:
+                  $ref: '#/components/examples/realtimeWeatherExampleByCode'    
+          links:
+           self:
+            $ref: '#/components/links/realtimeLinkByCode'           
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByCode'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'                   
         '404':
           description: no managed location found for the given code
       tags:
@@ -264,13 +293,23 @@ paths:
           description: >-
             successful retrieval operation. A JSON object representing hourly forecast
             information available for the client's location - only data for the next hours is returned (based on value of the header X-Current-Hour).
+            The response contains links which clients can use to get realtime, daily and full weather information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HourlyWeather'
               examples:
                 hourlyWeatherExample:
-                  $ref: '#/components/examples/hourlyWeatherExample'
+                  $ref: '#/components/examples/hourlyWeatherExampleByIP'
+          links:
+           self:
+            $ref: '#/components/links/hourlyForecastLinkByIP'          
+           realtime:
+            $ref: '#/components/links/realtimeLinkByIP'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByIP'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByIP'              
         '204':
           description: No hourly forecast data available
         '400':
@@ -298,14 +337,23 @@ paths:
         '200':
           description: >-
             successful retrieval operation. A JSON object representing hourly forecast
-            data available for the given location code
+            data available for the given location code. The response contains links which clients can use to get realtime, daily and full weather information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HourlyWeather'
               examples:
                 hourlyWeatherExample:
-                  $ref: '#/components/examples/hourlyWeatherExample'
+                  $ref: '#/components/examples/hourlyWeatherExampleByCode'
+          links:
+           self:
+            $ref: '#/components/links/hourlyForecastLinkByCode'           
+           realtime:
+            $ref: '#/components/links/realtimeLinkByCode'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'            
         '204':
           description: No hourly forecast data available
         '400':
@@ -352,14 +400,23 @@ paths:
               ]            
       responses:
         '200':
-          description: successful update operation. Hourly weather forecast data updated successfully - all previous data is replaced.
+          description: successful update operation. Hourly weather forecast data updated successfully - all previous data is replaced. The response contains links which clients can use to get realtime, daily and full weather information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HourlyWeather'
               examples:
                 hourlyWeatherExample:
-                  $ref: '#/components/examples/hourlyWeatherExample'                
+                  $ref: '#/components/examples/hourlyWeatherExampleByCode'   
+          links:
+           self:
+            $ref: '#/components/links/hourlyForecastLinkByCode'           
+           realtime:
+            $ref: '#/components/links/realtimeLinkByCode'
+           daily_forecast:
+            $ref: '#/components/links/dailyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'                   
         '400':
           description: bad request. Request body contains empty array (no data) or there are some invalid values of fields in hourly forecast information.
         '404':
@@ -381,14 +438,23 @@ paths:
         '200':
           description: >-
             successful retrieval operation. A JSON object representing daily forecast
-            data available for the client's location
+            data available for the client's location. The response contains links which clients can use to get realtime, hourly and full weather forecast information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DailyWeather'
               examples:
                 dailyWeatherExample:
-                  $ref: '#/components/examples/dailyWeatherExample'
+                  $ref: '#/components/examples/dailyWeatherExampleByIP'
+          links:
+           self:
+            $ref: '#/components/links/dailyForecastLinkByIP'           
+           realtime:
+            $ref: '#/components/links/realtimeLinkByIP'
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByIP'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByIP'                  
         '204':
           description: No daily forecast data available
         '400':
@@ -416,14 +482,23 @@ paths:
         '200':
           description: >-
             successful retrieval operation. A JSON object representing daily forecast
-            data available for the given location code
+            data available for the given location code. The response contains links which clients can use to get realtime, hourly and full weather forecast information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DailyWeather'
               examples:
                 dailyWeatherExample:
-                  $ref: '#/components/examples/dailyWeatherExample'
+                  $ref: '#/components/examples/dailyWeatherExampleByCode'
+          links:
+           self:
+            $ref: '#/components/links/dailyForecastLinkByCode'           
+           realtime:
+            $ref: '#/components/links/realtimeLinkByCode'
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'                   
         '204':
           description: No daily forecast data available
         '404':
@@ -476,14 +551,23 @@ paths:
               ]                
       responses:
         '200':
-          description: successful update operation. Daily weather forecast data updated successfully - all previous data is replaced.
+          description: successful update operation. Daily weather forecast data updated successfully - all previous data is replaced. The response contains links which clients can use to get realtime, hourly and full weather forecast information.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DailyWeather'
               examples:
                 dailyWeatherExample:
-                  $ref: '#/components/examples/dailyWeatherExample'                  
+                  $ref: '#/components/examples/dailyWeatherExampleByCode'      
+          links:
+           self:
+            $ref: '#/components/links/dailyForecastLinkByCode'           
+           realtime:
+            $ref: '#/components/links/realtimeLinkByCode'
+           hourly_forecast:
+            $ref: '#/components/links/hourlyForecastLinkByCode'
+           full_forecast:
+            $ref: '#/components/links/fullForecastLinkByCode'                     
         '400':
           description: >-
             Bad request. Request body contains empty array (no data) or there are some invalid values of fields in daily forecast information.
@@ -520,7 +604,10 @@ paths:
                 fullWeatherExample3:
                   $ref: '#/components/examples/fullWeatherExample3' 
                 fullWeatherExample4:
-                  $ref: '#/components/examples/fullWeatherExample4'                  
+                  $ref: '#/components/examples/fullWeatherExample4'   
+          links:
+           self:
+            $ref: '#/components/links/fullForecastLinkByIP'                   
         '400':
           description: bad request. Could not determine client's IP address
         '404':
@@ -558,6 +645,9 @@ paths:
                   $ref: '#/components/examples/fullWeatherExample3' 
                 fullWeatherExample4:
                   $ref: '#/components/examples/fullWeatherExample4'
+          links:
+           self:
+            $ref: '#/components/links/fullForecastLinkByCode'                       
         '404':
           description: No managed location found for the given location code
       tags:
@@ -592,6 +682,9 @@ paths:
               examples:
                 fullWeatherExample1:
                   $ref: '#/components/examples/fullWeatherExample1'   
+          links:
+           self:
+            $ref: '#/components/links/fullForecastLinkByCode'                       
         '400':
           description: >-
             Bad request. Request body contains some invalid values of fields in realtime weather, hourly forecast or daily forecast                 
@@ -828,7 +921,7 @@ components:
                 description: current weather status
                 example: Cloudy
   examples:
-    realtimeWeatherExample:
+    realtimeWeatherExampleByIP:
       summary: realtime weather information
       value: |-
         {
@@ -838,9 +931,49 @@ components:
           "precipitation": 88,
           "status": "Cloudy",
           "wind_speed": 5,
-          "last_updated": "2023-02-02T19:23:00Z"
+          "last_updated": "2023-02-02T19:23:00Z",
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/realtime"
+            },
+            "hourly_forecast": {
+              "href": "http://localhost:8080/v1/hourly"
+            },
+            "daily_forecast": {
+              "href": "http://localhost:8080/v1/daily"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full"
+            }            
+          }          
         }      
-    hourlyWeatherExample:
+    realtimeWeatherExampleByCode:
+      summary: realtime weather information
+      value: |-
+        {
+          "location": "San Francisco, California, United States of America",
+          "temperature": 12,
+          "humidity": 32,
+          "precipitation": 88,
+          "status": "Cloudy",
+          "wind_speed": 5,
+          "last_updated": "2023-02-02T19:23:00Z",
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/realtime/SFCA_USA"
+            },
+            "hourly_forecast": {
+              "href": "http://localhost:8080/v1/hourly/SFCA_USA"
+            },
+            "daily_forecast": {
+              "href": "http://localhost:8080/v1/daily/SFCA_USA"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }            
+          }          
+        }          
+    hourlyWeatherExampleByIP:
       summary: hourly weather forecast information
       value: |-
         {
@@ -864,11 +997,67 @@ components:
               "temperature": 15,
               "precipitation": 60,
               "status": "Sunny"
-            }                
-          ]
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/hourly"
+            },
+            "realtime": {
+              "href": "http://localhost:8080/v1/realtime"
+            },
+            "daily_forecast": {
+              "href": "http://localhost:8080/v1/daily"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full"
+            }            
+          }
          
         }
-    dailyWeatherExample:
+    hourlyWeatherExampleByCode:
+      summary: hourly weather forecast information
+      value: |-
+        {
+          "location": "San Francisco, California, United States of America",
+          "hourly_forecast":
+          [
+            {
+              "hour_of_day": 8,            
+              "temperature": 12,
+              "precipitation": 88,
+              "status": "Cloudy"
+            },
+            {
+              "hour_of_day": 9,
+              "temperature": 13,
+              "precipitation": 86,
+              "status": "Cloudy"
+            },
+            {
+              "hour_of_day": 10,
+              "temperature": 15,
+              "precipitation": 60,
+              "status": "Sunny"
+            }
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/hourly/SFCA_USA"
+            },
+            "realtime": {
+              "href": "http://localhost:8080/v1/realtime/SFCA_USA"
+            },
+            "daily_forecast": {
+              "href": "http://localhost:8080/v1/daily/SFCA_USA"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }            
+          }
+         
+        }        
+    dailyWeatherExampleByIP:
       summary: daily weather forecast information
       value: |-
         {
@@ -899,9 +1088,71 @@ components:
               "precipitation": 90,
               "status": "Rainy"
             }          
-          ]
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/daily"
+            },
+            "realtime": {
+              "href": "http://localhost:8080/v1/realtime"
+            },
+            "hourly_forecast": {
+              "href": "http://localhost:8080/v1/hourly"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full"
+            }            
+          }          
          
         }  
+    dailyWeatherExampleByCode:
+      summary: daily weather forecast information
+      value: |-
+        {
+          "location": "San Francisco, California, United States of America",
+          "daily_forecast":
+          [
+            {
+              "day_of_month": 10,
+              "month": 2,
+              "min_temp": 6,
+              "max_temp": 12,
+              "precipitation": 60,
+              "status": "Cloudy"
+            },     
+            {
+              "day_of_month": 11,
+              "month": 2,
+              "min_temp": 7,
+              "max_temp": 14,
+              "precipitation": 70,
+              "status": "Sunny"
+            },   
+            {
+              "day_of_month": 12,
+              "month": 2,
+              "min_temp": 6,
+              "max_temp": 10,
+              "precipitation": 90,
+              "status": "Rainy"
+            }          
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/daily/SFCA_USA"
+            },
+            "realtime": {
+              "href": "http://localhost:8080/v1/realtime/SFCA_USA"
+            },
+            "hourly_forecast": {
+              "href": "http://localhost:8080/v1/hourly/SFCA_USA"
+            },
+            "full_forecast": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }            
+          }          
+         
+        }          
     fullWeatherExample1:
       summary: full weather forecast information
       value: |-
@@ -962,7 +1213,12 @@ components:
               "precipitation": 90,
               "status": "Rainy"
             }          
-          ]
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }         
+          }          
          
         }     
     fullWeatherExample2:
@@ -1003,7 +1259,12 @@ components:
               "precipitation": 70,
               "status": "Sunny"
             }        
-          ]
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }         
+          }            
          
         }      
     fullWeatherExample3:
@@ -1020,7 +1281,12 @@ components:
             "last_updated": "2023-02-02 19:23:00"
           },            
           "hourly_forecast":[ ],        
-          "daily_forecast": [ ]
+          "daily_forecast": [ ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }         
+          }            
         } 
     fullWeatherExample4:
       summary: no realtime weather, no hourly forecast, no daily forecast
@@ -1028,7 +1294,12 @@ components:
         {
           "location": "San Francisco, California, United States of America", 
           "hourly_forecast":[ ],        
-          "daily_forecast": [ ]
+          "daily_forecast": [ ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }         
+          }            
         }         
     updateFullWeatherExample:
       summary: full weather forecast information to be updated
@@ -1089,7 +1360,12 @@ components:
               "precipitation": 90,
               "status": "Rainy"
             }          
-          ]
+          ],
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/v1/full/SFCA_USA"
+            }         
+          }            
          
         }           
   parameters:
@@ -1109,3 +1385,29 @@ components:
         example: 7
       required: true
       description: The current hour at the client's location
+      
+  links:
+    realtimeLinkByIP:
+      operationId: getRealtimeByIPAddress
+      description: get realtime weather data of the same location
+    realtimeLinkByCode:
+      operationId: getRealtimeByLocationCode
+      description: get realtime weather data of the same location      
+    hourlyForecastLinkByIP:
+      operationId: listHourlyForecastByIPAddress
+      description: get hourly weather forecast of the same location
+    hourlyForecastLinkByCode:
+      operationId: listHourlyForecastByLocationCode
+      description: get hourly weather forecast of the same location   
+    dailyForecastLinkByIP:
+      operationId: listDailyForecastByIPAddress
+      description: get daily weather forecast of the same location
+    dailyForecastLinkByCode:
+      operationId: listDailyForecastByLocationCode
+      description: get daily weather forecast of the same location
+    fullForecastLinkByIP:
+      operationId: getFullWeatherByIPAddress
+      description: get full weather forecast of the same location      
+    fullForecastLinkByCode:
+      operationId: getFullWeatherByLocationCode
+      description: get full weather forecast of the same location            
