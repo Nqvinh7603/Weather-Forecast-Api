@@ -1,14 +1,14 @@
 openapi: 3.0.3
 info:
-  title: Weather Forecast APIs - SkyAPI Inc.
+  title: Weather Forecast APIs
   version: 1.1.0
   description: >-
     Reference design documentation of Weather Forecast APIs based on the OpenAPI
   termsOfService: https://skyweather.net/terms
   contact:
-    email: contact@skyweather.net
-    name: Contact SkyAPI Inc.
-    url: https://skyweather.net/contacts
+    email: nqvinh7603@gmail.com
+    name: Nguyen Quang Vinh
+    url: https://github.com/Nqvinh7603
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
