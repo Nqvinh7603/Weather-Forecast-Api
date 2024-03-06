@@ -21,7 +21,7 @@
 window.onload = function() {
   // Tạo một đối tượng SwaggerUIBundle và gán nó vào #swagger-ui trong HTML
   const ui = SwaggerUIBundle({
-    url: "weather-forecast-apis-v1.0.0.yml",
+    url: "weather-forecast-apis-v1.1.0.yml",
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [
