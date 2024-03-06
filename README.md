@@ -45,6 +45,9 @@
 * DB Technology: Mysql
 * Testing technologies: mockito - mocking framework for unit tests, JUnit testing framework
 
+## DEMO
+* Link demo api: https://nqvinh7603.github.io/Weather-Forecast-Api/
+
 ### UPCOMING UPDATES
 * Hypermedia-Driven APIS for Weather Forecast APIS project
 * Pagination, Sort and Filter for APIS
