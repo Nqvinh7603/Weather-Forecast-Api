@@ -7,7 +7,9 @@ import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.skyapi.weatherforecast.common.Location;
 
 import jakarta.persistence.Column;
@@ -19,9 +21,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
-
+@JsonPropertyOrder({"location","tempurature", "humidity", "precipitation", "wind_speed", "status", "last_updated"})
 public class RealtimeWeatherDTO {
-	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String location;
 	
 	@Range(min = -50, max = 50, message = "Temperature must be in the range of -50 to 50 Celsius degree")

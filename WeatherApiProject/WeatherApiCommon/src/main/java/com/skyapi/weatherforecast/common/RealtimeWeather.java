@@ -25,24 +25,24 @@ public class RealtimeWeather {
 	@JsonIgnore
 	private String locationCode;
 	
-	// nhiệt độ
+	
 	@Range(min = -50, max = 50, message = 
 			"Temporature must be in the range of -50 to 50 Celsius degree")
 	private int temperature;
-	// độ ẩm
+	
 	@Range(min = 0, max = 100, message = 
 			"Humidity must be in the range of 0 to 100 percentage")
 	private int humidity;
-	// kết tủa
+	
 	@Range(min = 0, max = 100, message = 
 			"Precipitation must be in the range of 0 to 100 percentage")
 	private int precipitation;
-	// tốc độ gió
+	
 	@JsonProperty("wind_speed")
 	@Range(min = 0, max = 200, message = 
 			"Wind Speed must be in the range of 0 to 200 km/h")
 	private int windSpeed;
-	// trạng thái
+	
 	@Column(length = 50)
 	@NotBlank(message = "Status not must be empty")
 	@Length(min = 3, max = 50, message = "Status must be in between 3-50 characters")
